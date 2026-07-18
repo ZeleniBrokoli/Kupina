@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Movies
+{% endblock %}
+
+
+{% block content %}
+
+<h1 class="page-title">
+    Explore <span>Movies</span>
+</h1>
+
+<p class="page-subtitle">
+    Browse thousands of movies and discover your next favorite.
+</p>
+
+<div class="search-box">
+<div class="search-content">
+
+    <h2>
+        🔍 Search Movies
+    </h2>
+
+    <form method="GET" action="{{ url_for('main.movies') }}">
+
+        <div class="search-fields">
+
+            <input
+            type="text"
+            name="query"
+            placeholder="Search by movie title..."
+            value="{{ query }}"
+            >
+
+            <select name="genre">
+                <option value="">All Genres</option>
+
+                {% for genre in genres %}
+                    <option
+                    value="{{ genre }}"
+                        {% if genre == selected_genre %}selected{% endif %}
+                    >
+                        {{ genre }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <select name="year">
+                <option value="">All Years</option>
+
+                {% for year in years %}
+                    <option
+                        value="{{ year }}"
+                        {% if year == selected_year %}selected{% endif %}
+                    >
+                        {{ year }}
+                    </option>
+                {% endfor %}
+            </select>
+
+        </div>
+
+        <div class="search-buttons">
+
+            <button type="submit" class="primary-btn">
+                Search
+            </button>
+
+            <a href="{{ url_for('main.movies') }}"
+               class="primary-btn reset-btn">
+                Reset Filters
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+    <div class="search-logo">
+
+        <img
+            src="{{ url_for(
+                'static',
+                filename='images/kupina-logo.png'
+            ) }}"
+            alt="Kupina"
+        >
+    </div>
+ </div>
+
+{% if query or selected_genre or selected_year %}
+
+    <h3 class="search-results-title">
+        Showing {{ movies|length }} result(s)
+    </h3>
+
+{% else %}
+
+    <h3 class="search-results-title page-title">
+        Popular Movies
+    </h3>
+
+{% endif %}
+
+
+{% if movies %}
+
+<div class="movie-grid">
+
+    {% for movie in movies %}
+
+        <a href="{{ url_for('main.movie_details', movie_id=movie.movieId) }}"
+           class="movie-link">
+
+            <div class="movie-card">
+
+                {% if movie.poster %}
+
+                    <img
+                        src="{{ movie.poster }}"
+                        class="movie-poster"
+                        alt="{{ movie.title }}"
+                    >
+
+                {% else %}
+
+                    <div class="placeholder-poster">
+                        🎬
+                    </div>
+
+                {% endif %}
+
+                <div class="movie-info">
+
+                    <h3>
+                        {{ movie.title }}
+                    </h3>
+
+                    <p>
+                        {{ movie.genres }}
+                    </p>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+</div>
+
+{% else %}
+    <div class="empty-box">
+        No movies match the selected filters.
+    </div>
+{% endif %}
+
+{% endblock %}

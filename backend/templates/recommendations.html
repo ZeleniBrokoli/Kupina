@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}
+Recommendations
+{% endblock %}
+
+
+{% block content %}
+
+<h1 class="page-title">
+    Recommended <span>For You</span>
+</h1>
+
+<p class="page-subtitle">
+    Personalized movie recommendations based on your ratings.
+</p>
+
+<div class="recommendation-controls">
+
+    <div>
+        <p>
+            You have rated
+            <strong>{{ rating_count }}</strong>
+            movie(s).
+        </p>
+
+        {% if last_generated %}
+            <p class="recommendation-updated-at">
+                Last generated:
+                {{ last_generated | format_datetime }}
+            </p>
+        {% endif %}
+    </div>
+
+    <form
+            id="recommendations-form"
+        method="POST"
+        action="{{ url_for(
+            'main.generate_recommendations'
+        ) }}"
+    >
+
+        <button
+            type="submit"
+            class="primary-btn"
+            {% if rating_count < 5 %}disabled{% endif %}
+        >
+
+            {% if movies %}
+                Regenerate Recommendations
+            {% else %}
+                Generate Recommendations
+            {% endif %}
+
+        </button>
+    </form>
+</div>
+
+
+{% if movies %}
+
+<div class="movie-grid">
+
+    {% for movie in movies %}
+
+        <a
+            href="/movie/{{ movie.movieId }}"
+            class="movie-link"
+        >
+
+            <div class="movie-card">
+
+                {% if movie.poster %}
+
+                    <img
+                        src="{{ movie.poster }}"
+                        class="movie-poster"
+                        alt="{{ movie.title }}"
+                    >
+
+                {% else %}
+
+                    <div class="placeholder-poster">
+                        🎬
+                    </div>
+
+                {% endif %}
+
+
+                <div class="movie-info">
+
+                    <h3>
+                        {{ movie.title }}
+                    </h3>
+
+                    <p>
+                        {{ movie.genres }}
+                    </p>
+
+                    <div class="predicted-rating">
+                        Predicted rating:
+                        ⭐ {{ movie.predictedRating }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    {% endfor %}
+
+</div>
+
+
+{% else %}
+<div class="empty-recommendations">
+
+    {% if rating_count < 5 %}
+
+        <h2>
+            More ratings are needed
+        </h2>
+
+        <p>
+            Rate at least 5 movies before generating
+            personalized recommendations.
+        </p>
+
+        <a
+            href="{{ url_for('main.movies') }}"
+            class="primary-btn recommendations-action"
+        >
+            Explore Movies
+        </a>
+
+    {% else %}
+
+        <h2>
+            Your recommendations are ready to be generated
+        </h2>
+
+        <p>
+            You have rated enough movies. Use the button
+            above to create your personalized list.
+        </p>
+
+    {% endif %}
+
+</div>
+
+{% endif %}
+
+
+{% endblock %}

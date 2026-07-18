@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Kupina - Home
+{% endblock %}
+
+
+{% block content %}
+
+<section class="hero">
+    <div class="hero-content">
+
+        <h1>Discover your next favorite movie</h1>
+        <p>Personalized recommendations powered by data.</p>
+        <a href="/movies">
+            <button class="explore-movie">Explore Movies</button>
+        </a>
+    </div>
+</section>
+
+
+<section class="movie-section">
+
+<h2>🔥 Trending Movies</h2>
+
+    <div class="movie-slider-container">
+        <button class="slider-btn left"
+        id="trending-left"
+        onclick="slideLeft('trending', 'trending-left', 'trending-right')">
+            ❮
+        </button>
+
+        <div class="movie-slider" id="trending">
+            <div class="movie-row">
+                {% for movie in movies %}
+                    <a href="/movie/{{ movie.movieId }}" class="movie-link">
+
+                        <div class="movie-card">
+                            {% if movie.poster %}
+                                <img
+                                    src="{{ movie.poster }}"
+                                    class="movie-poster"
+                                    alt="{{ movie.title }}"
+                                >
+
+                                {% else %}
+                                <div class="placeholder-poster">
+                                    🎬
+                                </div>
+                            {% endif %}
+
+                            <div class="movie-info">
+                                <h3>{{ movie.title }}</h3>
+                                <p>{{ movie.genres }}</p>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <button class="slider-btn right"
+        id="trending-right"
+        onclick="slideRight('trending', 'trending-left', 'trending-right')">
+            ❯
+        </button>
+    </div>
+</section>
+
+
+<section class="movie-section">
+
+    <h2>⭐ Top Rated</h2>
+
+    <div class="movie-slider-container">
+        <button class="slider-btn left"
+        id="top-left"
+        onclick="slideLeft('top-rated', 'top-left', 'top-right')">
+            ❮
+        </button>
+
+        <div class="movie-slider" id="top-rated">
+            <div class="movie-row">
+                {% for movie in top_movies %}
+                    <a href="/movie/{{ movie.movieId }}" class="movie-link">
+
+                        <div class="movie-card">
+                            {% if movie.poster %}
+                                <img
+                                    src="{{ movie.poster }}"
+                                    class="movie-poster"
+                                    alt="{{ movie.title }}"
+                                >
+
+                                {% else %}
+                                <div class="placeholder-poster">
+                                    🎬
+                                </div>
+                            {% endif %}
+
+                            <div class="movie-info">
+                                <h3>{{ movie.title }}</h3>
+                                <p>{{ movie.genres }}</p>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <button class="slider-btn right"
+        id="top-right"
+        onclick="slideRight('top-rated', 'top-left', 'top-right')">
+            ❯
+        </button>
+    </div>
+</section>
+
+
+{% endblock %}

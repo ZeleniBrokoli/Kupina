@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Watchlist
+{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">
+    My Watchlist
+</h1>
+
+<div class="movie-grid">
+
+{% for movie in movies %}
+    <a href="/movie/{{ movie.movieId }}" class="movie-link">
+        <div class="movie-card">
+            {% if movie.poster %}
+                <img
+                        src="{{ movie.poster }}"
+                        class="movie-poster"
+                        alt="{{ movie.title }}"
+                >
+            {% else %}
+
+                <div class="placeholder-poster">
+                    🎬
+                </div>
+
+            {% endif %}
+
+                <div class="movie-info">
+                    <h3>
+                        {{ movie.title }}
+                    </h3>
+
+                    <p>
+                        {{ movie.genres }}
+                    </p>
+                </div>
+        </div>
+    </a>
+
+{% endfor %}
+</div>
+
+{% endblock %}

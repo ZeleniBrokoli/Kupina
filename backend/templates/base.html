@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+        Kupina
+        {% endblock %}
+    </title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<body>
+
+
+<nav class="navbar">
+
+    <a href="/" class="logo">
+        <img
+        src="{{ url_for(
+            'static',
+            filename='images/kupina-logo.png'
+        ) }}"
+        alt="Kupina logo"
+        class="navbar-logo-image"
+    >
+
+        <span>
+            KUPINA
+        </span>
+    </a>
+
+    <button
+        type="button"
+        class="nav-toggle"
+        id="nav-toggle"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="nav-links"
+    >
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <div class="nav-links" id="nav-links">
+
+        {% if current_user.is_authenticated %}
+            <span class="welcome-user">
+                Hi, {{ current_user.username }}!
+            </span>
+        {% endif %}
+
+        <a href="/">Home</a>
+        <a href="/movies">Movies</a>
+        <a href="/analytics">Analytics</a>
+
+        {% if current_user.is_authenticated %}
+
+            <a href="/watchlist">
+                Watchlist
+            </a>
+
+            <a href="{{ url_for('main.recommendations') }}">
+                For You
+            </a>
+
+            <a href="/logout">
+                Logout
+            </a>
+
+        {% else %}
+
+            <a href="/login">
+                Login
+            </a>
+
+            <a href="/register">
+                Register
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+
+{% block content %}
+
+{% endblock %}
+
+
+<footer>
+    <p> © 2026 Kupina </p>
+</footer>
+
+<script>
+    function updateArrows(slider, leftBtn, rightBtn){
+        if(slider.scrollLeft <= 0){
+            leftBtn.style.display = "none";
+        } else {
+            leftBtn.style.display = "block";
+        }
+
+        if(
+            slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 5
+        ){
+            rightBtn.style.display = "none";
+        } else {
+            rightBtn.style.display = "block";
+        }
+    }
+
+
+    function slideRight(id, leftId, rightId){
+        let slider = document.getElementById(id);
+        slider.scrollLeft += 500;
+
+        setTimeout(() => {
+            updateArrows(
+                slider,
+                document.getElementById(leftId),
+                document.getElementById(rightId)
+            );
+        },300);
+    }
+
+
+    function slideLeft(id, leftId, rightId){
+        let slider = document.getElementById(id);
+        slider.scrollLeft -= 500;
+
+        setTimeout(() => {
+            updateArrows(
+                slider,
+                document.getElementById(leftId),
+                document.getElementById(rightId)
+            );
+        },300);
+    }
+
+    window.onload = function(){
+        document.querySelectorAll(".movie-slider").forEach(slider => {
+            let container = slider.parentElement;
+            let left = container.querySelector(".left");
+            let right = container.querySelector(".right");
+
+            updateArrows(
+                slider,
+                left,
+                right
+            );
+        });
+
+    }
+
+    const navToggle = document.getElementById("nav-toggle");
+    const navLinks = document.getElementById("nav-links");
+
+    if (navToggle && navLinks) {
+        navToggle.addEventListener("click", function () {
+            const isOpen = navLinks.classList.toggle("open");
+            navToggle.classList.toggle(
+                "open",
+                isOpen
+            );
+
+            navToggle.setAttribute(
+                "aria-expanded",
+                isOpen
+            );
+        });
+
+        navLinks.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", function () {
+                navLinks.classList.remove("open");
+                navToggle.classList.remove("open");
+                navToggle.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+            });
+        });
+    }
+
+</script>
+</body>
+</html>

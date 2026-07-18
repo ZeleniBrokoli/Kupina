@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}
+Login
+{% endblock %}
+
+
+{% block content %}
+<div
+    class="login-intro"
+    id="login-intro"
+    aria-hidden="true"
+>
+
+    <div class="login-intro-content">
+        <img
+            src="{{ url_for(
+                'static',
+                filename='images/kupina-logo.png'
+            ) }}"
+            alt="Kupina"
+            class="login-intro-logo"
+        >
+        <h1 class="login-intro-title">
+            KUPINA
+        </h1>
+    </div>
+</div>
+
+<div class="auth-page">
+    <div class="auth-card">
+        <h1>
+            Welcome Back
+        </h1>
+
+        <p class="auth-subtitle">
+            Login to continue watching movies.
+        </p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required>
+
+            <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required>
+
+            <button type="submit">
+                Login
+            </button>
+        </form>
+
+        <p class="auth-footer">
+            Don't have an account?
+            <a href="/register">
+                Register
+            </a>
+        </p>
+    </div>
+</div>
+
+<script>
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const intro =
+                document.getElementById("login-intro");
+
+            if (!intro) {
+                return;
+            }
+
+            window.setTimeout(
+                function () {
+                    intro.classList.add("hidden");
+                },
+                2100
+            );
+        }
+    );
+</script>
+
+{% endblock %}

@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ movie.title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="movie-hero"
+{% if movie.backdrop %}
+style="
+background-image:
+linear-gradient(
+rgba(15,15,15,0.75),
+rgba(15,15,15,1)
+),
+url('{{ movie.backdrop }}');
+"
+{% endif %}
+>
+    <div class="hero-content">
+        <h1>{{ movie.title }}</h1>
+
+        <div class="genre-container">
+            {% for genre in movie.genres.split("|") %}
+                <span class="genre-badge">
+                    {{ genre }}
+                </span>
+            {% endfor %}
+        </div>
+
+        <div class="average-rating">
+            ⭐ {{ average_rating }} / 5
+            <span>
+                ({{ number_of_ratings }} ratings)
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="hero-content">
+    {% if movie.overview %}
+        <div class="movie-overview">
+            <h3>Overview</h3>
+            <p>
+                {{ movie.overview }}
+            </p>
+        </div>
+    {% endif %}
+</div>
+
+<div class="movie-details-container">
+    <div class="movie-banner">
+        <div class="poster-section">
+            {% if movie.poster %}
+                <img
+                    src="{{ movie.poster }}"
+                    class="details-poster"
+                    alt="{{ movie.title }}"
+                >
+                {% else %}
+                <div class="movie-poster-placeholder">
+                    🎬
+                </div>
+            {% endif %}
+
+            <form method="POST" action="/movie/{{ movie.movieId }}/watchlist">
+                <button class="secondary-btn watchlist-btn">
+                    {% if in_watchlist %}
+                        ✓ In Watchlist
+                    {% else %}
+                        ❤️ Add to Watchlist
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+
+        <div class="movie-details">
+            <h1>{{ movie.title }}</h1>
+
+            <div class="genre-container">
+                {% for genre in movie.genres.split("|") %}
+                    <span class="genre-badge">
+                        {{ genre }}
+                    </span>
+                {% endfor %}
+            </div>
+
+            <div class="average-rating">
+                ⭐ {{ average_rating }} / 5
+                <span>
+                    ({{ number_of_ratings }} ratings)
+                </span>
+            </div>
+
+            <div class="movie-actions">
+                <form method="POST" action="/movie/{{ movie.movieId }}/rate">
+                    <h2>Rate this movie</h2>
+
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5"
+                        {% if user_rating == 5 %}checked{% endif %}>
+                        <label for="star5">★</label>
+
+
+                        <input type="radio" id="star4" name="rating" value="4"
+                        {% if user_rating == 4 %}checked{% endif %}>
+                        <label for="star4">★</label>
+
+
+                        <input type="radio" id="star3" name="rating" value="3"
+                        {% if user_rating == 3 %}checked{% endif %}>
+                        <label for="star3">★</label>
+
+
+                        <input type="radio" id="star2" name="rating" value="2"
+                        {% if user_rating == 2 %}checked{% endif %}>
+                        <label for="star2">★</label>
+
+
+                        <input type="radio" id="star1" name="rating" value="1"
+                        {% if user_rating == 1 %}checked{% endif %}>
+                        <label for="star1">★</label>
+                    </div>
+
+                    <button class="primary-btn">
+                        Rate Movie
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <hr class="section-divider">
+
+    <div class="comments-section">
+
+        <h2>Comments</h2>
+
+        {% if current_user.is_authenticated %}
+            <form method="POST" action="/movie/{{ movie.movieId }}/comment">
+
+                <textarea
+                    name="comment"
+                    rows="4"
+                    placeholder="Write your thoughts about this movie..."
+                    required></textarea>
+
+                <button class="primary-btn">
+                    Post Comment
+                </button>
+            </form>
+        {% else %}
+            <p>
+                Please <a href="/login">login</a> to leave a comment.
+            </p>
+        {% endif %}
+
+        <div class="comments-list">
+            {% for comment in comments %}
+
+                <div class="comment-card">
+
+                    <h4>{{ comment.username }}</h4>
+
+                    {% if comment.rating %}
+                        <div class="comment-stars">
+                            {% for i in range(comment.rating) %}
+                                ★
+                            {% endfor %}
+                            {% for i in range(5-comment.rating) %}
+                                ☆
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <p>{{ comment.text }}</p>
+
+                    <small>{{ comment.createdAt.strftime("%d.%m.%Y %H:%M") }}</small>
+
+                </div>
+            {% else %}
+                <p>No comments yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
