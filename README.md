@@ -25,7 +25,6 @@ Aplikacija omogućava korisnicima da pretražuju filmove, ocenjuju ih, prave lis
 - HTML
 - CSS
 - JavaScript
-- Bootstrap
 - Chart.js
 
 ---
@@ -149,7 +148,6 @@ python main.py
 - hibridni sistem preporuke;
 - preporuke zasnovane na sadržaju filma;
 - optimizacija hiperparametara ALS modela;
-- dodatne metrike evaluacije (Precision@K, Recall@K).
 
 ---
 
