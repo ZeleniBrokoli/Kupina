@@ -1,0 +1,22 @@
+-- klonirati repozitorijum
+git clone https://github.com/ZeleniBrokoli/Kupina.git
+cd Kupina
+
+-- napraviti virtuelno okruzenje
+python -m venv .venv
+
+-- aktivirati ga
+.\.venv\Scripts\activate
+
+-- instalirati pakete
+pip install -r requirements.txt
+
+
+-- isto za spark
+python -m venv .venv-spark
+.\.venv-spark\Scripts\activate
+pip install -r requirements-spark.txt
+
+-- podaci
+python dataset/scripts/convert_movielens_to_csv.py
+python dataset/scripts/import_csv_to_mongodb.py
