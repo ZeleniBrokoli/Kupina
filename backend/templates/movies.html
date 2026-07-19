@@ -136,12 +136,16 @@ Movies
                 <div class="movie-info">
 
                     <h3>
-                        {{ movie.title }}
+                        {{ movie.display_title }}
                     </h3>
 
                     <p>
                         {{ movie.genres }}
                     </p>
+
+                    <div class="rating">
+                        ⭐ {{ movie.average_rating }}
+                    </div>
                 </div>
             </div>
         </a>
