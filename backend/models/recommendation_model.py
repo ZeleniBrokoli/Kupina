@@ -1,10 +1,22 @@
 from backend.config import db
 import subprocess
 from pathlib import Path
+import re
 
 recommendations_collection = db["recommendations"]
 movies_collection = db["movies"]
 ratings_collection = db["ratings"]
+
+# ovde izdvajamo naziv filma bez godine
+def add_display_title(movie):
+
+    movie["display_title"] = re.sub(
+        r"\s*\(\d{4}\)$",
+        "",
+        movie["title"]
+    )
+
+    return movie
 
 def get_user_recommendations(
     user_id: int,
@@ -52,6 +64,8 @@ def get_user_recommendations(
 
         if movie is None:
             continue
+
+        add_display_title(movie)
 
         movie["predictedRating"] = round(
             recommendation.get(

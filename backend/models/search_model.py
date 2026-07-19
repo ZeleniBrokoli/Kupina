@@ -1,10 +1,19 @@
 import re
-
 from backend.config import db
 
-
 movies_collection = db["movies"]
+ratings_collection = db["ratings"]
 
+# ovde izdvajamo naziv filma bez godine
+def add_display_title(movie):
+
+    movie["display_title"] = re.sub(
+        r"\s*\(\d{4}\)$",
+        "",
+        movie["title"]
+    )
+
+    return movie
 
 def search_movies(query="", genre="", year="", limit=100):
 
@@ -40,9 +49,71 @@ def search_movies(query="", genre="", year="", limit=100):
             "$and": filters
         }
 
-    return list(
-        movies_collection.find(mongo_filter).limit(limit)
+    movies = list(
+        movies_collection.find(
+            mongo_filter
+        ).limit(limit)
     )
+
+    movie_ids = [
+        movie["movieId"]
+        for movie in movies
+    ]
+
+    if not movie_ids:
+        return movies
+
+    pipeline = [
+        {
+            "$match": {
+                "movieId": {
+                    "$in": movie_ids
+                }
+            }
+        },
+        {
+            "$group": {
+                "_id": "$movieId",
+                "average_rating": {
+                    "$avg": "$rating"
+                },
+                "rating_count": {
+                    "$sum": 1
+                }
+            }
+        }
+    ]
+
+    statistics = list(
+        ratings_collection.aggregate(pipeline)
+    )
+
+    statistics_by_movie = {
+        item["_id"]: item
+        for item in statistics
+    }
+
+    for movie in movies:
+        add_display_title(movie)
+
+        stats = statistics_by_movie.get(
+            movie["movieId"]
+        )
+
+        if stats is None:
+            movie["average_rating"] = None
+            movie["rating_count"] = 0
+        else:
+            movie["average_rating"] = round(
+                stats["average_rating"],
+                2
+            )
+
+            movie["rating_count"] = int(
+                stats["rating_count"]
+            )
+
+    return movies
 
 
 def get_all_genres():
