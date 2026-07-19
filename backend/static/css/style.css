@@ -215,6 +215,7 @@ button {
 .movie-row {
     display:flex;
     gap:25px;
+    overflow: visible;
 }
 
 .movie-card {
@@ -223,7 +224,7 @@ button {
     border-radius:15px;
     overflow:hidden;
     transition:0.3s;
-    height: 420px;
+    height: 455px;
     color: white;
     display:flex;
     flex-direction:column;
@@ -265,6 +266,7 @@ button {
     gap: 25px;
     padding-top: 30px;
     padding-left: 30px;
+    overflow:visible;
 }
 
 .movie-info h3 {
@@ -282,6 +284,7 @@ button {
 .movie-link {
     text-decoration: none;
     color: inherit;
+    overflow:visible;
 }
 
 .explore-movie {
@@ -703,12 +706,13 @@ button {
     align-items:center;
     position:relative;
     margin-bottom:50px;
+    overflow:visible;
 }
 
 .movie-slider {
     display:flex;
     gap:25px;
-    overflow:hidden;
+    overflow: hidden;
     scroll-behavior:smooth;
     width:100%;
 }
@@ -1033,6 +1037,15 @@ button {
 
 .reset-btn {
     text-decoration: none;
+}
+
+.rating{
+    /*margin-top: auto;*/
+    padding-top: 12px;
+    margin-bottom: 3px;
+    color: #bca7ff;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .predicted-rating {
