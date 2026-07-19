@@ -345,23 +345,9 @@ def add_movie_to_watchlist(movie_id):
 @login_required
 def watchlist():
 
-    items = get_user_watchlist(
+    movies = get_user_watchlist(
         current_user.als_userId
     )
-
-
-    movies = []
-
-
-    for item in items:
-
-        movie = get_movie_by_id(
-            item["movieId"]
-        )
-
-        if movie:
-            movies.append(movie)
-
 
     return render_template(
         "watchlist.html",
