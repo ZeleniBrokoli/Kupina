@@ -41,6 +41,142 @@ Podaci su importovani u MongoDB, nakon čega se obrađuju pomoću Apache Spark-a
 
 ---
 
+# Pokretanje projekta
+
+## Preduslovi
+
+Pre pokretanja projekta potrebno je instalirati:
+
+- Python 3.12+
+- MongoDB Community Server
+- Java (JDK 17 ili noviji)
+- Apache Spark (ukoliko nije konfigurisan kroz PySpark)
+
+---
+
+## 1. Kloniranje repozitorijuma
+
+```bash
+git clone https://github.com/ZeleniBrokoli/Kupina.git
+cd Kupina
+```
+
+---
+
+## 2. Kreiranje virtuelnog okruženja
+
+Windows:
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+---
+
+## 3. Instalacija potrebnih biblioteka
+
+```bash
+pip install -r requirements.txt
+```
+
+Za Spark deo projekta:
+
+```bash
+pip install -r requirements-spark.txt
+```
+
+---
+
+## 4. Pokretanje MongoDB servera
+
+Pokrenuti lokalni MongoDB server.
+
+---
+
+## 5. Kreiranje `.env` fajla
+
+U root direktorijumu projekta potrebno je kreirati `.env` fajl.
+
+Primer sadržaja:
+
+```env
+TMDB_API_KEY=YOUR_API_KEY
+SECRET_KEY=YOUR_SECRET_KEY
+```
+
+---
+
+## 6. Učitavanje MovieLens skupa podataka
+
+MovieLens 1M skup podataka nalazi se u direktorijumu:
+
+```text
+dataset/ml-1m/
+```
+
+Početni `.dat` fajlovi konvertuju se u CSV format komandom:
+
+```bash
+python dataset/scripts/convert_movielens_to_csv.py
+```
+
+Nakon konverzije nastaju fajlovi:
+
+- `users.csv`
+- `movies.csv`
+- `ratings.csv`
+
+CSV fajlovi se zatim učitavaju u MongoDB bazu `kupina`:
+
+```bash
+python dataset/scripts/import_csv_to_mongodb.py
+```
+
+Skripta kreira i popunjava kolekcije:
+
+- `users`
+- `movies`
+- `ratings`
+
+Pri ponovnom pokretanju postojeće MovieLens kolekcije se brišu i podaci se učitavaju iznova.
+
+## 7. Pokretanje Spark dela projekta (Pokretanje Jupyter Notebook-a)
+
+Pokrenuti:
+
+```bash
+jupyter notebook
+```
+
+Otvoriti notebook **Kupina_Spark_Analysis.ipynb** i izvršiti sve ćelije redom.
+
+Notebook:
+
+- izvršava Spark analize;
+- trenira ALS model;
+- generiše preporuke;
+- čuva rezultate u MongoDB kolekcije:
+  - `spark_analytics`
+  - `recommendations`
+  - `als_model_metrics`.
+
+---
+
+## 8. Pokretanje web aplikacije
+
+Pokretanje aplikacije:
+
+```bash
+python backend/app.py
+```
+
+Nakon pokretanja aplikacija je dostupna na:
+
+```
+http://localhost:5000
+```
+
 # Funkcionalnosti
 
 Aplikacija omogućava:
@@ -101,44 +237,6 @@ Kupina
 ├── main.py
 ├── requirements.txt
 └── README.md
-```
-
----
-
-# Pokretanje projekta
-
-## 1. Instalacija biblioteka
-
-```bash
-pip install -r requirements.txt
-```
-
-## 2. Pokretanje MongoDB baze
-
-Pokrenuti lokalni MongoDB server.
-
-## 3. Kreirati `.env` fajl
-
-Primer sadržaja:
-
-```env
-TMDB_API_KEY=YOUR_API_KEY
-SECRET_KEY=YOUR_SECRET_KEY
-```
-
-## 4. Pokrenuti Spark skripte
-
-Izvršiti skripte za:
-
-- učitavanje podataka,
-- analitiku,
-- treniranje ALS modela,
-- generisanje preporuka.
-
-## 5. Pokrenuti aplikaciju
-
-```bash
-python main.py
 ```
 
 ---
